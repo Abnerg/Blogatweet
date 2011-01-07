@@ -53,6 +53,8 @@ if (Util::validUser()) {
     </div>
 	</div>
 
+  <a id="follow-us" href="http://twitter.com/blogatweet"></a>
+
 </div>
 
 <?php include('footer.php'); ?>

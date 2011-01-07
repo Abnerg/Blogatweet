@@ -11,6 +11,7 @@ body {
 	margin:0px auto;
 	overflow:auto;
 	padding:40px 30px 30px 30px;
+  position: relative;
 	width:900px;
 }
 #page_content .left {
@@ -30,6 +31,15 @@ body {
 }
 #get-started h1 {
   font-size: 60px;
+}
+#follow-us {
+  background: url(/img/twitter-followus.png);
+  bottom: 10px;
+  display: block;
+  height: 109px;
+  position: absolute;
+  right: 10px;
+  width: 120px;
 }
 #arrows {
 	-moz-border-radius:8px;
