@@ -11,29 +11,26 @@ body {
 	margin:0px auto;
 	overflow:auto;
 	padding:40px 30px 30px 30px;
-	width:800px;
+	width:900px;
 }
-#top-left {
-	float:left;
-	width:600px;
+#page_content .left {
+  float: left;
+  width: 350px;
 }
-#bottom-left {
-	float:left;
-	width:310px;
+#page_content .right {
+  float: left;
+  width: 550px;
 }
-#top-right {
-	float:right;
-	width:200px;
+#welcome {
+  margin: 0px auto;
+  width: 532px;
 }
-#bottom-right {
-	float:right;
-	width:450px;
+#get-started {
+  text-align: center;
 }
-.row {
-	overflow:auto;
-	padding-bottom:40px;
+#get-started h1 {
+  font-size: 60px;
 }
-
 #arrows {
 	-moz-border-radius:8px;
 	-webkit-border-radius:8px;
@@ -42,72 +39,4 @@ body {
 	border:1px solid #EEEEEE;
 	padding:1px;
 	width:300px;
-}
-#demo {
-}
-
-.title {
-	font-size:28px;
-	font-weight:bold;
-}
-
-#conversation {
-	-moz-border-radius:6px;
-	-webkit-border-radius:6px;
-	border-radius:6px;
-	border:1px solid #CFCFCF;
-	height:150px;
-	overflow:auto;
-}
-
-#url {
-	width:300px;
-}
-#loading {
-	display:none;
-}
-#add-error {
-	display:none;
-	color:#FF0000;
-	font-weight:bold;
-}
-#embeddable_wrapper {
-        border:0px solid black;
-        clear:both;
-}
-#embeddable {
-        border:1px dotted black;
-        clear:both;
-        height:80px;
-}
-#embeddable input#code {
-        width:100%;
-}
-#embeddable textarea.code {
-        border:none;
-        height:98%;
-        width:100%;
-}
-#embeddable div#code {
-        font:"Courier New", Courier, monospace;
-        font-size:12px;
-        height:100%;
-        overflow:auto;
-        width:100%;
-}
-
-#more {
-	padding-top:10px;
-	float:right;
-}
-
-.every_other_tweet {
-	background:#F8F8F8;
-}
-
-label {
-	font-size:18px;
-}
-h2 {
-	font-size:34px;
 }

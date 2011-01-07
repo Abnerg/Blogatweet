@@ -120,4 +120,8 @@ class Util {
 		return $author.' '.'<span class="tweet_text">'.$text.'</span>';
 	}	
 
+  static function sign_in_with_twitter_button() {
+    return '<a class="twitter-login" href="./redirect.php"><img src="./images/lighter.png" alt="Sign in with Twitter"/></a>';
+  }
+
 }

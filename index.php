@@ -28,99 +28,6 @@ if (Util::validUser()) {
 <link type="text/css" rel="stylesheet" href="css/blogatweet.css" />
 <link type="text/css" rel="stylesheet" href="css/index.css" />
 <script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
-<script type="text/javascript">
-var sortTweets = function(from,order) {
-        var times = new Array();
-        var orderedtweets = '';
-        var tweethtml = '';
-        from.find('div.tweet div.text span.timedate').each(function() {
-                times.push($(this).attr('unixtime'));
-        });
-        times.sort();
-        if(order === 'dsc') times.reverse();
-        for(var i = 0; i < times.length; i++) {
-                tweethtml = from.find('span.timedate[unixtime="'+times[i]+'"]').parents('div.tweet').html();
-                orderedtweets = orderedtweets + '<div class="tweet">' + tweethtml + '</div>';
-        }
-        from.html(orderedtweets);
-};
-var updateEmbeddable = function() {
-        $('#processing div.tweets').html($('#conversation').html());
-        $('#processing div.tweets').find('span.delete').each(function() { $(this).remove(); });
-        $('#processing div.tweets').find('span.timedate').each(function() { $(this).removeAttr('unixtime'); });
-        $('#processing div.tweets').find('a.retweet').each(function() {
-                $(this).attr('href','http://twitter.com/'+$(this).attr('screen_name')).attr('target','_blank').removeClass('retweet');
-        });
-        var html = $('#processing div.tweets').html();
-        var style = $('#processing div.style').text();
-        $('#code').text('<div id="BLOGATWEET">'+style+'<div class="tweets">'+html+'</div><div>Powered by <a href="http://blogatweet.com">blogatweet</a></div></div>');
-};
-var makeTweetsDeleteable = function() {
-        $('span.delete').unbind('click').click(function() {
-                $(this).parents('div.tweet').remove();
-                $('#conversation div.tweet').removeClass('every_other_tweet');
-                $('#conversation div.tweet:odd').addClass('every_other_tweet');
-		updateEmbeddable();
-        });
-};
-var selectAll = function(element) {
-        /* http://stackoverflow.com/questions/985272/jquery-selecting-text-in-an-element-akin-to-highlighting-with-your-mouse#answer-987376 */
-    var text = document.getElementById(element);
-    if ($.browser.msie) {
-        var range = document.body.createTextRange();
-        range.moveToElementText(text);
-        range.select();
-    } else if ($.browser.mozilla || $.browser.opera) {
-        var selection = window.getSelection();
-        var range = document.createRange();
-        range.selectNodeContents(text);
-        selection.removeAllRanges();
-        selection.addRange(range);
-    } else if ($.browser.safari) {
-        var selection = window.getSelection();
-        selection.setBaseAndExtent(text, 0, text, 1);
-    }
-};
-
-var deletebutton = '<span class="delete">[delete]</span>';
-
-$(document).ready(function() {
-	mpmetrics.track("hompage - hit");
-	$('a.twitter-login').click(function() {
-		mpmetrics.track("hompage - twitter signin");
-	});
-	$('#add').click(function() {
-		var status_url = $('#url').val();
-		if(status_url.length < 1) return false;
-		$('#loading').show();
-		$.post('get_tweet.php', {url: status_url}, function(data) {
-			$('#loading').hide();
-			if(data.error != null) {
-				$('#add-error').text(data.error).slideDown('slow').delay(4000).slideUp('normal');
-				return false;
-			}
-			$('#url').val('');
-			$('#conversation').append(data.tweet);
-			$('#conversation .tweet:last').find('div.text').append(deletebutton);
-			sortTweets($('#conversation'),'asc');
-			makeTweetsDeleteable();
-			updateEmbeddable();
-			mpmetrics.track("hompage - tweet added");
-		}, 'json');
-	});
-	$('#url').keypress(function(e) {
-		if(e.which === 13) $('#add').click();
-	});
-
-        $('#code').click(function() {
-		mpmetrics.track("hompage - embed code selected");
-                selectAll('code');
-        });
-
-	updateEmbeddable();
-
-});
-</script>
 </head>
 
 <body>
@@ -128,47 +35,24 @@ $(document).ready(function() {
 <?php include('header.php'); ?>
 
 <div id="page_content">
-	<div class="row">
-		<div id="top-left">
-    			<div>
-        			<div><strong>Welcome to</strong></div>
-        			<img src="img/banner.png" />
-        		</div>
-        	</div>
-    		<div id="top-right">
-			Get started!
-        		<a class="twitter-login" href="./redirect.php"><img src="./images/lighter.png" alt="Sign in with Twitter"/></a>
-    		</div>
-	</div>
 
-	<div class="row">
-		<div id="bottom-left">
-			<div id="arrows">
-				<img src="img/index-arrows-gray-green.png" />
-			</div>
-		</div>
-
-		<div id="bottom-right">
-			<div id="demo">
-				<div id="conversation_wrapper">
-					<h2>Conversation</h2>
-					<label for="url">Add tweets by status url</label>
-					<div>
-						<input id="url" type="text" />
-						<input id="add" type="button" value="add" />
-						<img id="loading" class="loading" src="img/loading.gif" />
-					</div>
-					<div id="add-error"></div>
-					<div id="conversation"></div>				
-				</div>
-
-				<?php include 'html/embeddable.html.inc'; ?>
-			</div>
-			<div id="more">
-				Want to do more? <a class="twitter-login" href="./redirect.php"><img src="./images/lighter.png" alt="Sign in with Twitter"/></a>
-			</div>	
+	<div class="left">
+	  <div id="arrows">
+			<img src="img/index-arrows-gray-green.png" />
 		</div>
 	</div>
+
+  <div class="right">
+    <div id="welcome">
+    	<div><strong>Welcome to</strong></div>
+    	<img src="img/banner.png" />
+    </div>
+    <div id="get-started">
+      <h1>Get started!</h1>
+      <div><?php echo Util::sign_in_with_twitter_button(); ?></div>
+    </div>
+	</div>
+
 </div>
 
 <?php include('footer.php'); ?>
