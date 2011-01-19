@@ -18,19 +18,26 @@ class Twitter {
     return new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $access_token['oauth_token'], $access_token['oauth_token_secret']);
   }
 
-  public static function url() {
-    return new TwitterUrls();
-  }
-
-  public $url = 'hi';
-
 }
 
 class TwitterUrl {
   public static function verifyCredentials() {
     return "account/verify_credentials";
   }
-  public static function statusesShow($id, $fmt = 'json') {
-    return "statuses/show/{$id}.{$fmt}";
+  public static function statusesShow($id, $fmt = 'json', $trim_user = true, $include_entities = true) {
+    return "statuses/show/{$id}.{$fmt}?trim_user={$trim_user}&include_entities={$include_entities}";
   }
+  public static function statusesRetweet($id, $fmt = 'json') {
+    return "statuses/retweet/{$id}.{$fmt}";
+  }
+  public static function statusesRetweets($id, $fmt = 'json') {
+    return "statuses/retweets/{$id}.{$fmt}";
+  }
+  public static function statusesRetweetedBy($id, $fmt = 'json') {
+    return "statuses/{$id}/retweeted_by.{$fmt}";
+  }
+  public static function statusesRetweetedByIds($id, $fmt = 'json') {
+    return "statuses/{$id}/retweeted_by/ids.{$fmt}";
+  }
+
 }
