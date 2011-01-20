@@ -15,12 +15,38 @@
 
   <script type="text/javascript">
 
+if(_.isEmpty(_.isPresent)) {
+  _.isPresent = function(obj) {
+    return !_.isEmpty(obj);
+  };
+}
+
+if(_.isEmpty(_.unless)) {
+  _.unless = function(bool, callback) {
+    if(!bool) callback();
+  };
+}
+
 var Tweet = Backbone.Model.extend({
 
 });
 
 var TweetCollection = Backbone.Collection.extend({
-  model: Tweet
+  model: Tweet,
+  hasTweet: function(tweet) {
+    return this.include(tweet);
+  }, 
+  updateView: function() {
+    $('#convo').html('');
+    _.each(
+      this.sortBy(function(tweet) {
+        return -1*Date.parse(tweet.get("created_at"));
+      }),
+      function(tweet) {
+        var view = new TweetView({ model: tweet });
+        $('#convo').prepend(view.render().el);
+      });
+  }
 });
 
 var TweetView = Backbone.View.extend({
@@ -33,18 +59,36 @@ var TweetView = Backbone.View.extend({
 
 var getConvo = function(id) {
   $.ajax({
-    url: 'http://api.twitter.com/1/statuses/show/'.concat(id).concat('.json'),
+    url: 'http://api.twitter.com/1/statuses/show/' + id + '.json',
     data: { 'include_entities': 'true' },
     dataType: 'jsonp',
     success: function(data, textStatus, XMLHttpRequest) {
       var tweet = new Tweet(data);
+      if(tweets.hasTweet(tweet)) return;
       tweets.add(tweet);
 
-      var view = new TweetView({ model: tweet });
-      $('#convo').append(view.render().el);
+      tweets.updateView();
 
-      _.each(tweet.get('entities').user_mentions, function(mention) {
-        console.log(mention);
+      $.ajax({
+        url: 'http://api.twitter.com/1/related_results/show/' + tweet.get("id_str") + '.json',
+        data: {},
+        dataType: 'jsonp',
+        success: function(data, textStatus, XMLHttpRequest) {
+          console.log(data);
+          var convo = _.detect(data, function(obj) { return obj.groupName === 'TweetsWithConversation'; });
+          if(_.isEmpty(convo) || _.isEmpty(convo.results)) return;
+          _.each(convo.results, function(result) {
+            var tweet = new Tweet(result.value);
+            _.unless(tweets.hasTweet(tweet), function() {
+              tweets.add(tweet);
+            });
+          });
+          tweets.updateView();
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+          console.log(textStatus);
+          console.log(errorThrown);
+        }
       });
 
       console.log(tweet);
@@ -57,10 +101,18 @@ var getConvo = function(id) {
   });
 };
 
+var tweets;
+
 $(document).ready(function() {
-  tweets = new TweetCollection();
   $('#button').click(function() {
-    getConvo($('#status').val());    
+    tweets = new TweetCollection();
+    var val = $('#status').val().replace(/http:\/\/twitter\.com\/\w*\/(status|statuses)\//, '');
+    if(_.isEmpty(val)) return;
+    $('#convo').html('');
+    getConvo(val);    
+  });
+  $('#status').keypress(function(e) {
+    if(e.keyCode === 13) $('#button').click();
   });
 });
 
