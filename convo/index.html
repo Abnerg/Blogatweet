@@ -1,0 +1,77 @@
+<html>
+<head>
+  <script type="text/javascript" src="libs/jquery-1.4.4.min.js"></script>
+  <script type="text/javascript" src="libs/underscore-min.js"></script>
+  <script type="text/javascript" src="libs/backbone-min.js"></script>
+  <script type="text/javascript" src="libs/icanhaz-min.js"></script>
+
+  <script id="tweet" type="text/html">
+    <div class="tweet">{{>user}} - {{text}}</div>
+  </script>
+
+  <script id="user" class="partial" type="text/html">
+    {{screen_name}}
+  </script>
+
+  <script type="text/javascript">
+
+var Tweet = Backbone.Model.extend({
+
+});
+
+var TweetCollection = Backbone.Collection.extend({
+  model: Tweet
+});
+
+var TweetView = Backbone.View.extend({
+  model: Tweet,
+  render: function() {
+    this.el = ich.tweet(this.model.toJSON());
+    return this;
+  }
+});
+
+var getConvo = function(id) {
+  $.ajax({
+    url: 'http://api.twitter.com/1/statuses/show/'.concat(id).concat('.json'),
+    data: { 'include_entities': 'true' },
+    dataType: 'jsonp',
+    success: function(data, textStatus, XMLHttpRequest) {
+      var tweet = new Tweet(data);
+      tweets.add(tweet);
+
+      var view = new TweetView({ model: tweet });
+      $('#convo').append(view.render().el);
+
+      _.each(tweet.get('entities').user_mentions, function(mention) {
+        console.log(mention);
+      });
+
+      console.log(tweet);
+      console.log(textStatus);
+    },
+    error: function(XMLHttpRequest, textStatus, errorThrown) {
+      console.log(textStatus);
+      console.log(errorThrown);
+    }
+  });
+};
+
+$(document).ready(function() {
+  tweets = new TweetCollection();
+  $('#button').click(function() {
+    getConvo($('#status').val());    
+  });
+});
+
+  </script>
+
+</head>
+<body>
+
+<input type="text" id="status" />
+<input type="button" id="button" value="get convo" />
+
+<div id="convo"></div>
+
+</body>
